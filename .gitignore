@@ -1,3 +1,2 @@
 .DS_Store
-delorean/node_modules/
-delorean/config/index.js
+config/index.js
