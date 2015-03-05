@@ -11,9 +11,10 @@ var hueModule       = {};
  *
  * @return {void}
  */
-hueModule.ini = function( config )
+hueModule.ini = function( config, data )
 {
     this.config = config;
+    this.data   = data;
 
     var self    = this;
 
@@ -155,7 +156,7 @@ hueModule.command = function( res, response )
     }
     if ( res.transitiontime || res.transitiontime === '0' )
     {
-        data.transitiontime = res.transitiontime / 100;   
+        data.transitiontime = parseFloat( res.transitiontime ) / 100;   
     }
 
     if ( data.on || data.on === false || data.off || data.off === false || data.sat || data.bri || 
@@ -164,6 +165,7 @@ hueModule.command = function( res, response )
         if ( res.light )
         {
             data.light  = res.light;
+
             this.send( '/api/' + this.config.hue.developer + '/lights/' + res.light + '/state', function()
             {
                 data.result     = 'success';

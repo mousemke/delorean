@@ -20,6 +20,9 @@ nestModule.ini   = function( config )
     var username = config.nest.username;
     var password = config.nest.password;
 
+    this.data   = data;
+    this.config = config;
+
     nest.login( username, password, function ( err, data ) 
     {
         if ( err ) 

@@ -7,9 +7,10 @@ var relayrModule                = {};
  *
  * @return {void}
  */
-relayrModule.ini = function( config )
+relayrModule.ini = function( config, data )
 {
-    this.config             = config;
+    this.config = config;
+    this.data   = data;
 
     var modules = this.config.relayr.modules;
 
@@ -19,7 +20,7 @@ relayrModule.ini = function( config )
         {
             this[ mod ]        = require( './' + mod );
             this[ mod ].send   = this.send;
-            this[ mod ].ini( config );    
+            this[ mod ].ini( config, data );    
         }
     }
 };
@@ -67,7 +68,6 @@ relayrModule.send = function( _url, _cb, method, data )
             }
             catch( e )
             {
-                console.log( e );
                 console.log( _url + ' appears to be down' );
             }
         });
@@ -105,7 +105,7 @@ relayrModule.send = function( _url, _cb, method, data )
  */
 relayrModule.command = function( res )
 {
-    console.log( 'wooo! ' + res );
+    console.log( 'the goggles do nothing!' );
 };
 
 

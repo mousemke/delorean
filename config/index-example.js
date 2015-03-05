@@ -5,15 +5,24 @@ var config = {
     serverPort: 666,
 
     modules : {
-        hue    : true,
-        relayr : true,
-        nest   : false,
-        tado   : false
+
+        hue     : true,
+        relayr  : true,
+        tado    : true,
+        weather : true
+        nest    : false,
+        twilo   : false,
+    },
+
+    weather : {
+        baseUrl     : 'api.openweathermap.org',
+        latitude    : '51',
+        longitude   : '11'
     },
 
     nest : {
-        username:   'nest username',
-        password:   'nest password'
+        username    : 'nest username',
+        password    : 'nest password'
     },
 
     tado : {
@@ -24,7 +33,7 @@ var config = {
 
     twilo : {
         sid         : 'twilo sid',
-        token       : 'twilo api token'
+        token       : 'twilo api token',
     },
 
     hue : {
@@ -55,12 +64,14 @@ var config = {
 
     // SUPPORT STOPPED 4.3.2015
     // oven : {
-    //     id : 'unique oven id'
+    //     id       : 'unique oven id',
+    //     pollTime : 30
     // },
 
     // SUPPORT STOPPED 4.3.2015
     // dishwasher : {
-    //     id : 'unique dishwasher id',
+        // id          : 'unique dishwasher id',
+        // pollTime    : 30
     // }
 };
 

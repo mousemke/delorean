@@ -9,9 +9,11 @@ var oven = {
      * 
      * @return {void}
      */
-    ini : function( config )
+    ini : function( config, data )
     {
-        this.config             = config;
+        this.config = config;
+        this.data   = data;
+
         this.send( '/devices/' + config.oven.id, function( res )
         { 
             if ( res.id ) 

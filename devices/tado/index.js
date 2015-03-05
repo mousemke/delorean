@@ -11,9 +11,10 @@ var tadoModule  = {};
  *
  * @return {void}
  */
-tadoModule.ini = function( config )
+tadoModule.ini = function( config, data )
 {
     this.config = config;
+    this.data   = data;
 
     var self = this;
 

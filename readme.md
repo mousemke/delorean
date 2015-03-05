@@ -77,7 +77,7 @@ example:
 **t=wunderbar**
 ```
     sensors
-        (anything?)
+        true
 ```
 
 
@@ -85,6 +85,13 @@ example:
 ```
 (under development)
 ```
+
+
+**t=twilio**
+```
+(under development)
+```
+
 
 
 ------------------------------------------------------------

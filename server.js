@@ -30,7 +30,21 @@ function Delorean()
         return new Delorean( options );
     }
 
+
+    /**
+     * /config/index.js 
+     * 
+     * @type {obj}
+     */
     this.config = config;
+
+    /**
+     * active data
+     * 
+     * @type {obj}
+     */
+    this.data   = {};
+
 
     /**
      *  Delorean init
@@ -58,7 +72,7 @@ Delorean.prototype.ini = function()
         if ( modules[ mod ] === true )
         {
             Delorean.prototype[ mod ] = require( './devices/' + mod + '/index' ); 
-            this[ mod ].ini( config );   
+            this[ mod ].ini( config, this.data );   
         }
     }
 };
@@ -120,16 +134,19 @@ Delorean.prototype.recieveCommands = function( response, request )
         {
             try
             {
-                this[ variables.t ].command( variables, response );
+                this[ variables.t ].command( variables, response, this.data );
             }
             catch( e )
             {
                 console.log( 'nope' );
+                response.writeHead( 200, { "Content-Type": "text/html" } );
+                response.write( '{"result":"error","error":"something went wrong"}' );
+                response.end();
             }
         }
         else if ( this.relayr[ variables.t ] ) 
         {
-            this.relayr[ variables.t ].command( variables, response );
+            this.relayr[ variables.t ].command( variables, response, this.data );
         }
         else
         {

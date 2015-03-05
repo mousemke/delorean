@@ -14,7 +14,40 @@ var wunderbar = {
      */
     sensors : {},
 
-    data : {},
+
+    /**
+     * initializes the wunderbar sensors
+     * 
+     * @param  {obj}                config              main config
+     * 
+     * @return {void}
+     */
+    ini : function( config, data )
+    {
+        this.config = config;
+        this.data   = data;
+
+        var wunderbar   = this.config.wunderbar;
+
+        var sensors = [ 'light', 'temp', 'gyro', 'sound', 'ir', 'grove' ];
+
+        for ( var i = 0, lenI = sensors.length; i < lenI; i++ ) 
+        {
+            this.send( '/devices/' + wunderbar[ sensors[ i ] + '_id' ], function( res )
+            { 
+                if ( res.id ) 
+                {
+                    console.log( 'wunderbar ' + sensors[ i ] + ' sensor connected.' );
+                }
+            } );
+        }
+
+
+        for ( var j = 0, lenJ = sensors.length; j < lenJ; j++ ) 
+        {
+            this.processElements( sensors[ j ] );
+        }
+    },
 
 
     /**
@@ -75,40 +108,6 @@ var wunderbar = {
                 }
             }
         } );
-    },
-
-
-    /**
-     * initializes the wunderbar sensors
-     * 
-     * @param  {obj}                config              main config
-     * 
-     * @return {void}
-     */
-    ini : function( config )
-    {
-        this.config     = config;
-        var wunderbar   = this.config.wunderbar;
-
-
-        var sensors = [ 'light', 'temp', 'gyro', 'sound', 'ir', 'grove' ];
-
-        for ( var i = 0, lenI = sensors.length; i < lenI; i++ ) 
-        {
-            this.send( '/devices/' + wunderbar[ sensors[ i ] + '_id' ], function( res )
-            { 
-                if ( res.id ) 
-                {
-                    console.log( 'wunderbar ' + sensors[ i ] + ' sensor connected.' );
-                }
-            } );
-        }
-
-
-        for ( var j = 0, lenJ = sensors.length; j < lenJ; j++ ) 
-        {
-            this.processElements( sensors[ j ] );
-        }
     },
 
 
