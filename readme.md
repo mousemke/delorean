@@ -41,20 +41,16 @@ example:
 **t=hue**
 ```
     light
-        light number
+        light-number
 
     on
         true
         false
 
-    off
-        true
-        false
-
     alert
         none
-        select
-        lselect
+        once
+        alert
 
     hue
         (0-65535)
@@ -77,6 +73,13 @@ example:
 **t=wunderbar**
 ```
     sensors
+        true
+```
+
+
+**t=wunderbar**
+```
+    now
         true
 ```
 

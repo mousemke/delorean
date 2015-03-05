@@ -76,7 +76,7 @@ weatherModule.parseWeather = function( res )
  *
  * @return {void}
  */
-weatherModule.send = function( _cb )
+weatherModule.send = function( url, _cb )
 {
     var config = this.config;
 
@@ -108,8 +108,7 @@ weatherModule.send = function( _cb )
     var options = {
         host    : this.config.weather.baseUrl,
         port    : 80,
-        path    : '/data/2.5/weather?lat=' + this.config.weather.latitude + 
-                                    '&lon=' + this.config.weather.longitude,
+        path    : url,
         method  : 'GET'
     };
 
@@ -131,7 +130,13 @@ weatherModule.command = function( res, response )
 
     var self    = this;
 
-    this.send( function( data )
+    if ( res.now )
+    {
+        var url = '/data/2.5/weather?lat=' + this.config.weather.latitude + 
+                                    '&lon=' + this.config.weather.longitude;
+    }
+
+    this.send( url, function( data )
     {
         data                = self.parseWeather( data );
 

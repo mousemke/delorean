@@ -130,10 +130,6 @@ hueModule.command = function( res, response )
     {
         data.on = ( res.on === 'true' ) ? true : false;
     }
-    if ( res.off )
-    {
-        data.on = ( res.off === 'true' ) ? false : true;
-    }
     if ( res.sat || res.sat === '0' )
     {
         data.sat = parseFloat( res.sat );
@@ -146,8 +142,18 @@ hueModule.command = function( res, response )
     {
         data.hue = parseFloat( res.hue );
     }
-    if ( res.alert )
+    if ( res.alert === 'alert' || res.alert === 'once' ||
+        res.alert === 'none' )
     {
+        switch( res.alert )
+        {
+            case 'alert':
+                res.alert = 'select';
+                break;
+            case 'once':
+                res.alert = 'select';
+                break;
+        }
         data.alert = res.alert;   
     }
     if ( res.effect )
