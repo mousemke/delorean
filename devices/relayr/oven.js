@@ -9,10 +9,17 @@ var oven = {
      * 
      * @return {void}
      */
-    ini : function( config, data )
+    ini : function( config, data, e )
     {
         this.config = config;
         this.data   = data;
+        this.e      = e; 
+
+        this.e.on( 'poll', function( time ) 
+        { 
+            // console.log( time ); 
+            console.log( 'oven' ); 
+        } );
 
         this.send( '/devices/' + config.oven.id, function( res )
         { 

@@ -4,6 +4,8 @@ var config = {
 
     serverPort: 666,
 
+    masterPoll  : 30,
+
     modules : {
 
         hue     : true,
@@ -17,18 +19,21 @@ var config = {
     weather : {
         baseUrl     : 'api.openweathermap.org',
         latitude    : '51',
-        longitude   : '11'
+        longitude   : '11',
+        pollTime    : 30 // in seconds
     },
 
     nest : {
         username    : 'nest username',
-        password    : 'nest password'
+        password    : 'nest password',
+        pollTime    : 30 // in seconds
     },
 
     tado : {
         baseUrl     : 'https://my.tado.com/mobile/1.4',
         username    : 'tado email address',
-        password    : 'tado password'
+        password    : 'tado password',
+        pollTime    : 30 // in seconds
     },
 
     twilo : {
@@ -38,7 +43,8 @@ var config = {
 
     hue : {
         baseUrl     : '192.168.0.105',
-        developer   : 'newdeveloper'
+        developer   : 'newdeveloper',
+        pollTime    : 30 // in seconds
     },
 
     relayr : {
@@ -65,13 +71,13 @@ var config = {
     // SUPPORT STOPPED 4.3.2015
     // oven : {
     //     id       : 'unique oven id',
-    //     pollTime : 30
+    //     pollTime : 30 // in seconds
     // },
 
     // SUPPORT STOPPED 4.3.2015
     // dishwasher : {
         // id          : 'unique dishwasher id',
-        // pollTime    : 30
+        // pollTime    : 30 // in seconds
     // }
 };
 

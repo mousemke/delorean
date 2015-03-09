@@ -11,10 +11,17 @@ var tadoModule  = {};
  *
  * @return {void}
  */
-tadoModule.ini = function( config, data )
+tadoModule.ini = function( config, data, e )
 {
     this.config = config;
     this.data   = data;
+    this.e      = e; 
+
+    this.e.on( 'poll', function( time ) 
+    { 
+        // console.log( time ); 
+        console.log( 'twilio' ); 
+    } );
 
     var self = this;
 

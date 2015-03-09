@@ -11,18 +11,24 @@ var weatherModule  = {};
  *
  * @return {void}
  */
-weatherModule.ini = function( config, data )
+weatherModule.ini = function( config, data, e )
 {
-    this.config = config;
-    this.data   = data;
+    this.config     = config;
+    this.data       = data;
+    this.e          = e; 
+    this.lastPoll   = 0;
+    var self        = this;
 
-    var self = this;
+    this.e.on( 'poll', this.poll.bind( this ) );   
 
-    this.send( function( res )
+    var url     = '/data/2.5/weather?lat=' + this.config.weather.latitude + 
+                                    '&lon=' + this.config.weather.longitude;
+    this.send( url, function( res )
     { 
         if ( res.coord ) 
         {
             console.log( 'Weather connected.' );
+            self.data.weather   = self.parseWeather( data );
         }
         else
         {
@@ -30,6 +36,36 @@ weatherModule.ini = function( config, data )
         }
     } );
 };
+
+
+/**
+ * runs on poll.  retrieves current light state
+ * 
+ * @param  {num}                    time                current time
+ * 
+ * @return {void}
+ */
+weatherModule.poll = function( time ) 
+{ 
+    var pollTime = this.config.weather.pollTime;
+
+    if ( pollTime && time > ( this.lastPoll + ( pollTime * 1000 ) ) )
+    {
+        this.lastPoll   = time;
+        var self        = this;
+
+        var url = '/data/2.5/weather?lat=' + this.config.weather.latitude + 
+                                    '&lon=' + this.config.weather.longitude;
+        this.send( url, function( data )
+        {
+            var oldData         = self.data.weather;
+            self.data.weather   = self.parseWeather( data );
+            var newData         = self.data.weather;
+            self.e.checkForChange( newData, oldData, 'weather', self.e );
+        } ); 
+    }
+};
+
 
 
 weatherModule.parseWeather = function( res )

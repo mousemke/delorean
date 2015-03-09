@@ -22,10 +22,11 @@ var wunderbar = {
      * 
      * @return {void}
      */
-    ini : function( config, data )
+    ini : function( config, data, e )
     {
         this.config = config;
         this.data   = data;
+        this.e      = e; 
 
         var wunderbar   = this.config.wunderbar;
 
@@ -41,7 +42,6 @@ var wunderbar = {
                 }
             } );
         }
-
 
         for ( var j = 0, lenJ = sensors.length; j < lenJ; j++ ) 
         {
@@ -63,48 +63,51 @@ var wunderbar = {
 
         var wunderbar = this.config.wunderbar;
 
-        this.data[ element ] = new Relayr( wunderbar.app_id );
+        this.sensors[ element ] = new Relayr( wunderbar.app_id );
 
-        var _el = this.data[ element ]
+        var _el = this.sensors[ element ]
 
         _el.connect( wunderbar.token, wunderbar[ element + '_id' ] );
 
         _el.on( 'data', function ( topic, msg ) 
         {
+            self.data.wunderbar = self.data.wunderbar || {};
+            var data = self.data.wunderbar;
+
             for ( var i = 0, lenI = msg.readings.length; i < lenI; i++ ) 
             {
                 if ( msg.readings[ i ].meaning === 'angularSpeed' )
                 {
-                    var as                      = msg.readings[ i ].value;
-                    self.sensors.gyro           = Math.floor( Math.abs( as.x ) + Math.abs( as.y ) + Math.abs( as.z ) );
+                    var as              = msg.readings[ i ].value;
+                    data.gyro           = Math.floor( Math.abs( as.x ) + Math.abs( as.y ) + Math.abs( as.z ) );
                 }
                 else if ( msg.readings[ i ].meaning === 'luminosity' )
                 {
-                    self.sensors.brightness     = msg.readings[ i ].value;
+                    data.brightness     = msg.readings[ i ].value;
                 }
                 else if ( msg.readings[ i ].meaning === 'temperature' )
                 {
-                    self.sensors.temperature    = msg.readings[ i ].value;
+                    data.temperature    = msg.readings[ i ].value;
                 }
                 else if ( msg.readings[ i ].meaning === 'humidity' )
                 {
-                    self.sensors.humidity       = msg.readings[ i ].value;
+                    data.humidity       = msg.readings[ i ].value;
                 }
                 else if ( msg.readings[ i ].meaning === 'color' )
                 {
-                    self.sensors.color          = msg.readings[ i ].value;
+                    data.color          = msg.readings[ i ].value;
                 }
                 else if ( msg.readings[ i ].meaning === 'noiseLevel' )
                 {
-                    self.sensors.noiseLevel     = msg.readings[ i ].value;
+                    data.noiseLevel     = msg.readings[ i ].value;
                 }
                 else if ( msg.readings[ i ].meaning === 'acceleration' )
                 {
-                    self.sensors.acceleration   = msg.readings[ i ].value;
+                    data.acceleration   = msg.readings[ i ].value;
                 }
                 else if ( msg.readings[ i ].meaning === 'proximity' )
                 {
-                    self.sensors.proximity     = msg.readings[ i ].value;
+                    data.proximity     = msg.readings[ i ].value;
                 }
             }
         } );

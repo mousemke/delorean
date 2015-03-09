@@ -7,10 +7,11 @@ var relayrModule                = {};
  *
  * @return {void}
  */
-relayrModule.ini = function( config, data )
+relayrModule.ini = function( config, data, e )
 {
     this.config = config;
     this.data   = data;
+    this.e      = e; 
 
     var modules = this.config.relayr.modules;
 
@@ -20,7 +21,7 @@ relayrModule.ini = function( config, data )
         {
             this[ mod ]        = require( './' + mod );
             this[ mod ].send   = this.send;
-            this[ mod ].ini( config, data );    
+            this[ mod ].ini( config, data, e );    
         }
     }
 };

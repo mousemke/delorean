@@ -15,13 +15,20 @@ var nestModule    = function( config )
 };
 
 
-nestModule.ini   = function( config )
+nestModule.ini   = function( config, data, e )
 {
     var username = config.nest.username;
     var password = config.nest.password;
 
     this.data   = data;
     this.config = config;
+    this.e      = e; 
+
+    this.e.on( 'poll', function( time ) 
+    { 
+        // console.log( time ); 
+        console.log( 'nest' ); 
+    } );
 
     nest.login( username, password, function ( err, data ) 
     {

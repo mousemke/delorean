@@ -9,10 +9,17 @@ var dishwasher = {
      * 
      * @return {void}
      */
-    ini : function( config, data )
+    ini : function( config, data, e )
     {
         this.config = config;
         this.data   = data;
+        this.e      = e; 
+
+        this.e.on( 'poll', function( time ) 
+        { 
+            // console.log( time ); 
+            console.log( 'dishwasher' ); 
+        } );
 
         this.send( '/devices/' + config.dishwasher.id, function( res )
         { 

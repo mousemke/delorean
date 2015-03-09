@@ -2,6 +2,7 @@ var fs              = require( 'fs' );
 var http            = require( 'http' );
 var url             = require( 'url' );
 var qs              = require( 'querystring' );
+var EventEmitter    = require( 'events' ).EventEmitter;
 var sockets         = {};
 var nextSocketId    = 0;
 
@@ -45,12 +46,53 @@ function Delorean()
      */
     this.data   = {};
 
-
     /**
-     *  Delorean init
-     **/
+     * placeholder for the poll interval
+     * 
+     * @type {obj}
+     */
+    this.e = new EventEmitter
+    
+    this.pollInterval = {};
+
+    this.lastPoll = 0;
+
+
     this.ini();
 }
+
+
+/**
+ * checks an object versus an old version of itself to check 
+ * if any values have changed, then emits an event for changed 
+ * values
+ * 
+ * @param  {obj}                    newData             new data
+ * @param  {obj}                    oldData             previous data
+ * @param  {str}                    module              module title
+ * @param  {obj}                    e                   event emitter
+ * 
+ * @return {void}                                        
+ */
+Delorean.prototype.checkForChange = function( newData, oldData, module, e )
+{
+    // console.log( e );
+    for ( var item in oldData )
+    {
+        if ( typeof newData[ item ] === 'object' )
+        {
+            this.checkForChange( newData[ item ], oldData[ item ], module + ':' + item, e );
+        }
+        else
+        {
+            if ( newData[ item ] !== oldData[ item ] )
+            {
+                e.emit( module + ':' + item, newData[ item ] );
+                console.log( module + ':' + item + ' - ' + newData[ item ] );
+            }
+        }
+    }
+};
 
 
 /**
@@ -67,51 +109,30 @@ Delorean.prototype.ini = function()
 
     var modules = this.config.modules;
 
+    var pollTime            = this.config.masterPoll * 1000;
+    this.pollInterval       = setInterval( this.poll.bind( this ), pollTime );
+    this.e.checkForChange   = this.checkForChange;
+
     for ( var mod in modules )
     {
         if ( modules[ mod ] === true )
         {
             Delorean.prototype[ mod ] = require( './devices/' + mod + '/index' ); 
-            this[ mod ].ini( config, this.data );   
+            this[ mod ].ini( config, this.data, this.e );   
         }
     }
 };
 
 
 /**
- * http server
- */
-Delorean.prototype.server = http.createServer( function( request, response )
-{
-    if ( request.method === 'GET' )
-    {
-        self.recieveCommands( response, request );
-    }
-} );
-
-
-/**
- * watches and closes web sockets
- *
+ * main poll trigger.  interval set in this.ini
+ * 
  * @return {void}
  */
-Delorean.prototype.watchSockets = function()
+Delorean.prototype.poll = function()
 {
-    this.server.on( 'connection', function( socket )
-    {
-      var socketId          = nextSocketId++;
-      sockets[ socketId ]   = socket;
-
-      console.log( 'socket ' + socketId + ' opened' );
-
-      socket.once( 'close', function ()
-      {
-        console.log( 'socket ' + socketId + ' closed' );
-        delete sockets[ socketId ];
-      });
-
-      socket.setTimeout( 4000 );
-    });
+    this.lastPoll = Date.now();
+    this.e.emit( 'poll', this.lastPoll );
 };
 
 
@@ -158,9 +179,47 @@ Delorean.prototype.recieveCommands = function( response, request )
     else
     {
         response.writeHead( 200, { "Content-Type": "text/html" } );
-        response.write( '{"result":"error","error":"invalid target"}' );
+        response.write( JSON.stringify( this.data ) );
+        // response.write( '{"result":"error","errogffdrr":"invalid target"}' );
         response.end();
     }
+};
+
+
+/**
+ * http server
+ */
+Delorean.prototype.server = http.createServer( function( request, response )
+{
+    if ( request.method === 'GET' )
+    {
+        self.recieveCommands( response, request );
+    }
+} );
+
+
+/**
+ * watches and closes web sockets
+ *
+ * @return {void}
+ */
+Delorean.prototype.watchSockets = function()
+{
+    this.server.on( 'connection', function( socket )
+    {
+      var socketId          = nextSocketId++;
+      sockets[ socketId ]   = socket;
+
+      console.log( 'socket ' + socketId + ' opened' );
+
+      socket.once( 'close', function ()
+      {
+        console.log( 'socket ' + socketId + ' closed' );
+        delete sockets[ socketId ];
+      });
+
+      socket.setTimeout( 4000 );
+    });
 };
 
 
